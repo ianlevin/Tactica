@@ -163,4 +163,31 @@ Public Class BD
             Return clienteID
         End Using
     End Function
+    Public Shared Function BuscarClientes(busqueda As String) As List(Of Cliente)
+        Dim clientes As New List(Of Cliente)
+
+        Using connection As New SqlConnection(connectionString)
+            Dim query As String = "SELECT * FROM Clientes where Cliente like @busqueda"
+            Dim command As New SqlCommand(query, connection)
+
+            Dim busquedaConPorcentaje As String = "%" & busqueda & "%"
+            command.Parameters.AddWithValue("@busqueda", busquedaConPorcentaje)
+
+            connection.Open()
+            Dim reader As SqlDataReader = command.ExecuteReader()
+
+            While reader.Read()
+                Dim cliente As New Cliente With {
+                    .ID = Convert.ToInt32(reader("ID")),
+                    .Cliente = reader("Cliente").ToString(),
+                    .Telefono = reader("Telefono").ToString(),
+                    .Correo = reader("Correo").ToString()
+                }
+                clientes.Add(cliente)
+            End While
+
+            reader.Close()
+        End Using
+        Return clientes
+    End Function
 End Class

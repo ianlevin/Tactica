@@ -13,6 +13,9 @@
     Public Function AgregarNuevoCliente(cliente As Cliente) As JsonResult
         Return Json(New With {.ID = BD.AgregarNuevoCliente(cliente)})
     End Function
+    Function BuscarClientes(busqueda As String) As JsonResult
+        Return Json(New With {.ID = BD.BuscarClientes(busqueda)})
+    End Function
     Function AbmClientes() As ActionResult
         ViewBag.Clientes = BD.ObtenerClientes()
         Return View("Abm_clientes")
@@ -30,6 +33,7 @@
     Public Function AgregarNuevoProducto(producto As Producto) As JsonResult
         Return Json(New With {.ID = BD.AgregarNuevoProducto(producto)})
     End Function
+
     Function About() As ActionResult
         ViewData("Message") = "Your application description page."
 

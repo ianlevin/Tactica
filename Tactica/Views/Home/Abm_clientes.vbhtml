@@ -3,6 +3,7 @@
 @Code
     Dim clientes = TryCast(ViewBag.Clientes, List(Of Cliente))
 End Code
+<input type="text" id="buscar_cliente" class="form-control mb-3" placeholder="Buscar por nombre" onkeyup="BuscarClientes()" />
 
 <h2>Lista de Clientes</h2>
 <button class="btn btn-success mb-3" onclick="NuevoCliente()">Agregar Cliente</button>
@@ -165,6 +166,41 @@ End Code
             },
             error: function (error) {
                 alert('Error al guardar el cliente: ' + error.responseText);
+            }
+        });
+    }
+
+    function BuscarClientes() {
+        const busqueda = document.getElementById('buscar_cliente').value.trim();
+
+        $.ajax({
+            type: 'POST',
+            url: '/Home/BuscarClientes',
+            dataType: 'JSON',
+            data: { busqueda: busqueda },
+            success: function (response) {
+                const tablaClientes = document.getElementById('tabla_clientes');
+                tablaClientes.innerHTML = '';
+                console.log(response)
+
+                response.forEach(function (cliente) {
+                    const nuevaFila = `
+                    <tr id="tr_${cliente.ID}">
+                        <td id="${cliente.ID}">${cliente.ID}</td>
+                        <td id="nombre_${cliente.ID}">${cliente.Cliente}</td>
+                        <td id="telefono_${cliente.ID}">${cliente.Telefono}</td>
+                        <td id="correo_${cliente.ID}">${cliente.Correo}</td>
+                        <td>
+                            <button type="submit" class="btn btn-danger" onclick="Eliminar(${cliente.ID})">❌</button>
+                            <button class="btn btn-primary" onclick="Editar(${cliente.ID})">Editar</button>
+                        </td>
+                    </tr>
+                `;
+                    tablaClientes.insertAdjacentHTML('beforeend', nuevaFila);
+                });
+            },
+            error: function (error) {
+                console.error('Error al buscar clientes: ', error);
             }
         });
     }
