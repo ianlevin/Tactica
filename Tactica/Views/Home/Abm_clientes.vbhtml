@@ -5,7 +5,7 @@
 End Code
 
 <h2>Lista de Clientes</h2>
-
+<button class="btn btn-success mb-3" onclick="NuevoCliente()">Agregar Cliente</button>
 <Table Class="table table-bordered">
     <thead>
         <tr>
@@ -16,18 +16,15 @@ End Code
             <th> Acciones</th> 
         </tr>
     </thead>
-    <tbody>
+    <tbody id="tabla_clientes">
         @For Each cliente As Cliente In clientes
-            @<tr>
+            @<tr id="tr_@cliente.ID">
                 <td id="@cliente.ID">@cliente.ID</td>
-                <td id="@cliente.ID+cliente">@cliente.Cliente</td>
-                <td id="@cliente.ID+telefono">@cliente.Telefono</td>
-                <td id="@cliente.ID+correo">@cliente.Correo</td>
+                <td id="nombre_@cliente.ID">@cliente.Cliente</td>
+                <td id="telefono_@cliente.ID">@cliente.Telefono</td>
+                <td id="correo_@cliente.ID">@cliente.Correo</td>
                 <td>
-                    <form action='@Url.Action("Eliminar")' method="post" style="display:inline;">
-                        <input type="hidden" name="id" value="@cliente.ID" />
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de eliminar este cliente?');">❌</button>
-                    </form>
+                    <button type="submit" class="btn btn-danger" onclick="Eliminar(@cliente.ID)">❌</button>
                     <button class="btn btn-primary" onclick="Editar(@cliente.ID)">Editar</button>
                 </td>
             </tr>
@@ -36,80 +33,139 @@ End Code
 </Table>
 <script>
     function Editar(clienteID) {
-    // Obtén la fila correspondiente al cliente
-    const fila = document.querySelector(`#${clienteID}`).parentElement;
+        const nombreCliente = document.getElementById('nombre_'+clienteID);
+        const telefonoCLiente = document.getElementById('telefono_'+clienteID);
+        const correoCliente = document.getElementById('correo_'+clienteID);
 
-    // Obtén las celdas que se quieren editar
-    const clienteCelda = fila.querySelector(`#${clienteID}+cliente`);
-    const telefonoCelda = fila.querySelector(`#${clienteID}+telefono`);
-    const correoCelda = fila.querySelector(`#${clienteID}+correo`);
+        nombreCliente.innerHTML = `<input type="text" value="${nombreCliente.textContent}" id="nombre_${clienteID}" class="form-control">`;
+        telefonoCLiente.innerHTML = `<input type="text" value="${telefonoCLiente.textContent}" id="telefono_${clienteID}" class="form-control">`;
+        correoCliente.innerHTML = `<input type="text" value="${correoCliente.textContent}" id="correo_${clienteID}" class="form-control">`;
 
-    // Guarda los valores actuales en caso de cancelación
-    const clienteOriginal = clienteCelda.textContent.trim();
-    const telefonoOriginal = telefonoCelda.textContent.trim();
-    const correoOriginal = correoCelda.textContent.trim();
-
-    // Convierte las celdas en campos de entrada
-    clienteCelda.innerHTML = `<input type="text" value="${clienteOriginal}" class="form-control" id="input-cliente-${clienteID}" />`;
-    telefonoCelda.innerHTML = `<input type="text" value="${telefonoOriginal}" class="form-control" id="input-telefono-${clienteID}" />`;
-    correoCelda.innerHTML = `<input type="text" value="${correoOriginal}" class="form-control" id="input-correo-${clienteID}" />`;
-
-    // Cambia el botón "Editar" a un botón de confirmación (✅)
-    const botonesCelda = fila.lastElementChild;
-    botonesCelda.innerHTML = `
-        <button class="btn btn-success" onclick="Guardar(${clienteID})">✅</button>
-        <button class="btn btn-secondary" onclick="Cancelar(${clienteID}, '${clienteOriginal}', '${telefonoOriginal}', '${correoOriginal}')">❌</button>
-    `;
+        const editarBoton = document.querySelector(`button[onclick="Editar(${clienteID})"]`);
+        editarBoton.textContent = "Guardar";
+        editarBoton.onclick = () => Guardar(clienteID);
 }
 
-function Guardar(clienteID) {
-    // Obtén los valores de los campos de entrada
-    const cliente = document.getElementById(`input-cliente-${clienteID}`).value.trim();
-    const telefono = document.getElementById(`input-telefono-${clienteID}`).value.trim();
-    const correo = document.getElementById(`input-correo-${clienteID}`).value.trim();
+    function Guardar(clienteID) {
+        const nombreCliente = document.getElementById('nombre_' + clienteID);
+        const telefonoCLiente = document.getElementById('telefono_' + clienteID);
+        const correoCliente = document.getElementById('correo_' + clienteID);
 
-    // Envía los datos al controlador usando fetch
-    fetch('/Clientes/Editar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        const nuevoCliente = {
             ID: clienteID,
-            Cliente: cliente,
+            Cliente: nombreCliente.querySelector('input').value,
+            Telefono: telefonoCLiente.querySelector('input').value,
+            Correo: correoCliente.querySelector('input').value
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '/Home/ActualizarCliente',
+            data: { cliente: nuevoCliente },
+            success: function (response) {
+                console.log("hola")
+                resolve(response);
+            },
+            error: function (error) {
+                console.log("hoala")
+            }
+        });
+
+        nombreCliente.innerHTML = `${nuevoCliente.Cliente}`;
+        telefonoCLiente.innerHTML = `${nuevoCliente.Telefono}`;
+        correoCliente.innerHTML = `${nuevoCliente.Correo}`;
+
+        const editarBoton = document.querySelector(`button[onclick="Editar(${clienteID})"]`);
+        editarBoton.textContent = "Editar";
+        editarBoton.onclick = () => Editar(clienteID);
+
+    }
+
+    function Eliminar(clienteID) {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/EliminarCliente',
+            data: { clienteID: clienteID },
+            success: function (response) {
+                resolve(response);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+        const clienteRow = document.getElementById('tr_' + clienteID);
+        clienteRow.remove();
+
+    }
+
+    function NuevoCliente() {
+        if (document.getElementById('tr_nuevo') == null) {
+            const nuevaFila = `
+                <tr id="tr_nuevo">
+                    <td>-</td>
+                    <td>
+                        <input type="text" id="nombre_nuevo" class="form-control" placeholder="Nombre del Cliente">
+                    </td>
+                    <td>
+                        <input type="text" id="telefono_nuevo" class="form-control" placeholder="Teléfono">
+                    </td>
+                    <td>
+                        <input type="email" id="correo_nuevo" class="form-control" placeholder="Correo Electrónico">
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" onclick="GuardarNuevoCliente()">Guardar</button>
+                    </td>
+                </tr>
+            `;
+
+            document.getElementById('tabla_clientes').insertAdjacentHTML('beforeend', nuevaFila);
+        }
+        
+    }
+
+    function GuardarNuevoCliente() {
+        const nombre = document.getElementById('nombre_nuevo').value.trim();
+        const telefono = document.getElementById('telefono_nuevo').value.trim();
+        const correo = document.getElementById('correo_nuevo').value.trim();
+
+        if (!nombre || !telefono || !correo) {
+            alert('Por favor, completa todos los campos antes de guardar.');
+            return;
+        }
+
+        const nuevoCliente = {
+            Cliente: nombre,
             Telefono: telefono,
             Correo: correo
-        })
-    })
-    .then(response => {
-        if (response.ok) {
-            alert('Cliente actualizado con éxito');
-            location.reload(); // Recarga la página para reflejar los cambios
-        } else {
-            alert('Error al actualizar el cliente');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al actualizar el cliente');
-    });
-}
+        };
 
-function Cancelar(clienteID, clienteOriginal, telefonoOriginal, correoOriginal) {
-    // Restaura los valores originales en las celdas
-    const fila = document.querySelector(`#${clienteID}`).parentElement;
+        $.ajax({
+            type: 'POST',
+            dataType: 'JSON',
+            url: '/Home/AgregarNuevoCliente', 
+            data: { cliente: nuevoCliente },
+            success: function (response) {
+                
+                const clienteID = response.ID;
 
-    fila.querySelector(`#${clienteID}+cliente`).textContent = clienteOriginal;
-    fila.querySelector(`#${clienteID}+telefono`).textContent = telefonoOriginal;
-    fila.querySelector(`#${clienteID}+correo`).textContent = correoOriginal;
+                const nuevaFila = `
+                <tr id="tr_${clienteID}">
+                    <td id="${clienteID}">${clienteID}</td>
+                    <td id="nombre_${clienteID}">${nuevoCliente.Cliente}</td>
+                    <td id="telefono_${clienteID}">${nuevoCliente.Telefono}</td>
+                    <td id="correo_${clienteID}">${nuevoCliente.Correo}</td>
+                    <td>
+                        <button type="submit" class="btn btn-danger" onclick="Eliminar(${clienteID})">❌</button>
+                        <button class="btn btn-primary" onclick="Editar(${clienteID})">Editar</button>
+                    </td>
+                </tr>
+            `;
 
-    // Restaura el botón de "Editar"
-    const botonesCelda = fila.lastElementChild;
-    botonesCelda.innerHTML = `
-        <form action='@Url.Action("Eliminar")' method="post" style="display:inline;">
-            <input type="hidden" name="id" value="${clienteID}" />
-            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de eliminar este cliente?');">❌</button>
-        </form>
-        <button class="btn btn-primary" onclick="Editar(${clienteID})">Editar</button>
-    `;
-}
-
+                document.getElementById('tr_nuevo').outerHTML = nuevaFila;
+            },
+            error: function (error) {
+                alert('Error al guardar el cliente: ' + error.responseText);
+            }
+        });
+    }
 </script>

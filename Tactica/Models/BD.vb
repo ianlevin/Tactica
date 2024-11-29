@@ -53,4 +53,59 @@ Public Class BD
 
         Return productos
     End Function
+    Public Shared Function ActualizarCliente(cliente As Cliente) As Boolean
+
+        Using connection As New SqlConnection(connectionString)
+            Dim query As String = "UPDATE Clientes SET Cliente = @Cliente, Telefono = @Telefono, Correo = @Correo WHERE ID = @ID"
+            Dim command As New SqlCommand(query, connection)
+
+            command.Parameters.AddWithValue("@Cliente", cliente.Cliente)
+            command.Parameters.AddWithValue("@Telefono", cliente.Telefono)
+            command.Parameters.AddWithValue("@Correo", cliente.Correo)
+            command.Parameters.AddWithValue("@ID", cliente.ID)
+
+            connection.Open()
+            Dim rowsAffected As Integer = command.ExecuteNonQuery()
+            connection.Close()
+            Return rowsAffected > 0
+        End Using
+    End Function
+    Public Shared Function EliminarCliente(clienteID As Integer) As Boolean
+
+        Using connection As New SqlConnection(connectionString)
+            Dim query As String = "DELETE FROM Clientes WHERE ID = @ID"
+            Dim command As New SqlCommand(query, connection)
+
+            command.Parameters.AddWithValue("@ID", clienteID)
+
+            connection.Open()
+            Dim rowsAffected As Integer = command.ExecuteNonQuery()
+            connection.Close()
+            Return rowsAffected > 0
+        End Using
+    End Function
+    Public Shared Function AgregarNuevoCliente(cliente As Cliente) As Integer
+
+        Using connection As New SqlConnection(connectionString)
+            Dim query As String = "INSERT INTO Clientes (Cliente, Telefono, Correo) VALUES (@Cliente, @Telefono, @Correo)"
+            Dim command As New SqlCommand(query, connection)
+
+            command.Parameters.AddWithValue("@Cliente", cliente.Cliente)
+            command.Parameters.AddWithValue("@Telefono", cliente.Telefono)
+            command.Parameters.AddWithValue("@Correo", cliente.Correo)
+
+            connection.Open()
+            command.ExecuteNonQuery()
+            connection.Close()
+
+            Dim queryID As String = "SELECT MAX(ID) FROM Clientes"
+            Dim commandID As New SqlCommand(queryID, connection)
+
+            connection.Open()
+            Dim clienteID As Integer = Convert.ToInt32(commandID.ExecuteScalar())
+            connection.Close()
+
+            Return clienteID
+        End Using
+    End Function
 End Class
