@@ -1,1 +1,2 @@
-﻿<a href='@Url.Action("Abm")'>Abm </a>
+﻿<a href='@Url.Action("AbmClientes")'>Abm clientes</a>
+<a href='@Url.Action("AbmProductos")'>Abm productos</a>

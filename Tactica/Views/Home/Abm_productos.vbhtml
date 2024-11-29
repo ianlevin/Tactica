@@ -1,67 +1,67 @@
-@ModelType List(Of Producto)
+Ôªø@ModelType List(Of Producto)
 
 @Code
     Dim productos = TryCast(ViewBag.Productos, List(Of Producto))
 End Code
 
-<h2>Lista de Clientes</h2>
-<button class="btn btn-success mb-3" onclick="NuevoCliente()">Agregar Cliente</button>
+<h2>Lista de Productos</h2>
+<button class="btn btn-success mb-3" onclick="NuevoProducto()">Agregar Producto</button>
 <Table Class="table table-bordered">
     <thead>
         <tr>
             <th> ID</th>
-            <th> Cliente</th>
-            <th> TelÈfono</th>
-            <th> Correo</th>
+            <th> Nombre</th>
+            <th> Precio</th>
+            <th> Categoria</th>
             <th> Acciones</th>
         </tr>
     </thead>
-    <tbody id="tabla_clientes">
-        @For Each cliente As Cliente In clientes
-            @<tr id="tr_@cliente.ID">
-                <td id="@cliente.ID">@cliente.ID</td>
-                <td id="nombre_@cliente.ID">@cliente.Cliente</td>
-                <td id="telefono_@cliente.ID">@cliente.Telefono</td>
-                <td id="correo_@cliente.ID">@cliente.Correo</td>
+    <tbody id="tabla_productos">
+        @For Each producto As Producto In productos
+            @<tr id="tr_@producto.ID">
+                <td id="@producto.ID">@producto.ID</td>
+                <td id="nombre_@producto.ID">@producto.Nombre</td>
+                <td id="precio_@producto.ID">@producto.Precio</td>
+                <td id="categoria_@producto.ID">@producto.Categoria</td>
                 <td>
-                    <button type="submit" class="btn btn-danger" onclick="Eliminar(@cliente.ID)">?</button>
-                    <button class="btn btn-primary" onclick="Editar(@cliente.ID)">Editar</button>
+                    <button type="submit" class="btn btn-danger" onclick="Eliminar(@producto.ID)">‚ùå</button>
+                    <button class="btn btn-primary" onclick="Editar(@producto.ID)">Editar</button>
                 </td>
             </tr>
         Next
     </tbody>
 </Table>
 <script>
-    function Editar(clienteID) {
-        const nombreCliente = document.getElementById('nombre_'+clienteID);
-        const telefonoCLiente = document.getElementById('telefono_'+clienteID);
-        const correoCliente = document.getElementById('correo_'+clienteID);
+    function Editar(productoID) {
+        const nombreProducto = document.getElementById('nombre_'+productoID);
+        const precioProducto = document.getElementById('precio_'+productoID);
+        const categoriaProducto = document.getElementById('categoria_'+productoID);
 
-        nombreCliente.innerHTML = `<input type="text" value="${nombreCliente.textContent}" id="nombre_${clienteID}" class="form-control">`;
-        telefonoCLiente.innerHTML = `<input type="text" value="${telefonoCLiente.textContent}" id="telefono_${clienteID}" class="form-control">`;
-        correoCliente.innerHTML = `<input type="text" value="${correoCliente.textContent}" id="correo_${clienteID}" class="form-control">`;
+        nombreProducto.innerHTML = `<input type="text" value="${nombreProducto.textContent}" id="nombre_${productoID}" class="form-control">`;
+        precioProducto.innerHTML = `<input type="text" value="${precioProducto.textContent}" id="precio_${productoID}" class="form-control">`;
+        categoriaProducto.innerHTML = `<input type="text" value="${categoriaProducto.textContent}" id="categoria_${productoID}" class="form-control">`;
 
-        const editarBoton = document.querySelector(`button[onclick="Editar(${clienteID})"]`);
+        const editarBoton = document.querySelector(`button[onclick="Editar(${productoID})"]`);
         editarBoton.textContent = "Guardar";
-        editarBoton.onclick = () => Guardar(clienteID);
+        editarBoton.onclick = () => Guardar(productoID);
 }
 
-    function Guardar(clienteID) {
-        const nombreCliente = document.getElementById('nombre_' + clienteID);
-        const telefonoCLiente = document.getElementById('telefono_' + clienteID);
-        const correoCliente = document.getElementById('correo_' + clienteID);
+    function Guardar(productoID) {
+        const nombreProducto = document.getElementById('nombre_' + productoID);
+        const precioProducto = document.getElementById('precio_' + productoID);
+        const categoriaProducto = document.getElementById('categoria_' + productoID);
 
-        const nuevoCliente = {
-            ID: clienteID,
-            Cliente: nombreCliente.querySelector('input').value,
-            Telefono: telefonoCLiente.querySelector('input').value,
-            Correo: correoCliente.querySelector('input').value
+        const nuevoProducto = {
+            ID: productoID,
+            nombre: nombreProducto.querySelector('input').value,
+            precio: precioProducto.querySelector('input').value,
+            categoria: categoriaProducto.querySelector('input').value
         };
 
         $.ajax({
             type: 'POST',
-            url: '/Home/ActualizarCliente',
-            data: { cliente: nuevoCliente },
+            url: '/Home/ActualizarProducto',
+            data: { producto: nuevoProducto },
             success: function (response) {
                 console.log("hola")
                 resolve(response);
@@ -71,21 +71,21 @@ End Code
             }
         });
 
-        nombreCliente.innerHTML = `${nuevoCliente.Cliente}`;
-        telefonoCLiente.innerHTML = `${nuevoCliente.Telefono}`;
-        correoCliente.innerHTML = `${nuevoCliente.Correo}`;
+        nombreProducto.innerHTML = `${nuevoProducto.nombre}`;
+        precioProducto.innerHTML = `${nuevoProducto.precio}`;
+        categoriaProducto.innerHTML = `${nuevoProducto.categoria}`;
 
-        const editarBoton = document.querySelector(`button[onclick="Editar(${clienteID})"]`);
+        const editarBoton = document.querySelector(`button[onclick="Editar(${productoID})"]`);
         editarBoton.textContent = "Editar";
-        editarBoton.onclick = () => Editar(clienteID);
+        editarBoton.onclick = () => Editar(productoID);
 
     }
 
-    function Eliminar(clienteID) {
+    function Eliminar(productoID) {
         $.ajax({
             type: 'POST',
-            url: '/Home/EliminarCliente',
-            data: { clienteID: clienteID },
+            url: '/Home/EliminarProducto',
+            data: { productoID: productoID },
             success: function (response) {
                 resolve(response);
             },
@@ -93,70 +93,70 @@ End Code
                 reject(error);
             }
         });
-        const clienteRow = document.getElementById('tr_' + clienteID);
-        clienteRow.remove();
+        const ProductoRow = document.getElementById('tr_' + productoID);
+        ProductoRow.remove();
 
     }
 
-    function NuevoCliente() {
+    function NuevoProducto() {
         if (document.getElementById('tr_nuevo') == null) {
             const nuevaFila = `
                 <tr id="tr_nuevo">
                     <td>-</td>
                     <td>
-                        <input type="text" id="nombre_nuevo" class="form-control" placeholder="Nombre del Cliente">
+                        <input type="text" id="nombre_nuevo" class="form-control" placeholder="Nombre del Producto">
                     </td>
                     <td>
-                        <input type="text" id="telefono_nuevo" class="form-control" placeholder="TelÈfono">
+                        <input type="text" id="precio_nuevo" class="form-control" placeholder="Precio">
                     </td>
                     <td>
-                        <input type="email" id="correo_nuevo" class="form-control" placeholder="Correo ElectrÛnico">
+                        <input type="email" id="categoria_nuevo" class="form-control" placeholder="Categoria">
                     </td>
                     <td>
-                        <button class="btn btn-primary" onclick="GuardarNuevoCliente()">Guardar</button>
+                        <button class="btn btn-primary" onclick="GuardarNuevoProducto()">Guardar</button>
                     </td>
                 </tr>
             `;
 
-            document.getElementById('tabla_clientes').insertAdjacentHTML('beforeend', nuevaFila);
+            document.getElementById('tabla_productos').insertAdjacentHTML('beforeend', nuevaFila);
         }
 
     }
 
-    function GuardarNuevoCliente() {
+    function GuardarNuevoProducto() {
         const nombre = document.getElementById('nombre_nuevo').value.trim();
-        const telefono = document.getElementById('telefono_nuevo').value.trim();
-        const correo = document.getElementById('correo_nuevo').value.trim();
+        const precio = document.getElementById('precio_nuevo').value.trim();
+        const categoria = document.getElementById('categoria_nuevo').value.trim();
 
-        if (!nombre || !telefono || !correo) {
+        if (!nombre || !precio || !categoria) {
             alert('Por favor, completa todos los campos antes de guardar.');
             return;
         }
 
-        const nuevoCliente = {
-            Cliente: nombre,
-            Telefono: telefono,
-            Correo: correo
+        const nuevoProducto = {
+            nombre: nombre,
+            precio: precio,
+            categoria: categoria
         };
 
         $.ajax({
             type: 'POST',
             dataType: 'JSON',
-            url: '/Home/AgregarNuevoCliente',
-            data: { cliente: nuevoCliente },
+            url: '/Home/AgregarNuevoProducto',
+            data: { producto: nuevoProducto },
             success: function (response) {
 
-                const clienteID = response.ID;
+                const productoID = response.ID;
 
                 const nuevaFila = `
-                <tr id="tr_${clienteID}">
-                    <td id="${clienteID}">${clienteID}</td>
-                    <td id="nombre_${clienteID}">${nuevoCliente.Cliente}</td>
-                    <td id="telefono_${clienteID}">${nuevoCliente.Telefono}</td>
-                    <td id="correo_${clienteID}">${nuevoCliente.Correo}</td>
+                <tr id="tr_${productoID}">
+                    <td id="${productoID}">${productoID}</td>
+                    <td id="nombre_${productoID}">${nuevoProducto.nombre}</td>
+                    <td id="precio_${productoID}">${nuevoProducto.precio}</td>
+                    <td id="categoria_${productoID}">${nuevoProducto.categoria}</td>
                     <td>
-                        <button type="submit" class="btn btn-danger" onclick="Eliminar(${clienteID})">?</button>
-                        <button class="btn btn-primary" onclick="Editar(${clienteID})">Editar</button>
+                        <button type="submit" class="btn btn-danger" onclick="Eliminar(${productoID})">?</button>
+                        <button class="btn btn-primary" onclick="Editar(${productoID})">Editar</button>
                     </td>
                 </tr>
             `;
@@ -164,7 +164,7 @@ End Code
                 document.getElementById('tr_nuevo').outerHTML = nuevaFila;
             },
             error: function (error) {
-                alert('Error al guardar el cliente: ' + error.responseText);
+                alert('Error al guardar el Producto: ' + error.responseText);
             }
         });
     }

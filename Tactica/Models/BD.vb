@@ -41,9 +41,9 @@ Public Class BD
             While reader.Read()
                 Dim producto As New Producto With {
                     .ID = Convert.ToInt32(reader("ID")),
-                    .Nombre = reader("Cliente").ToString(),
-                    .Precio = Convert.ToDouble(reader("ID")),
-                    .Categoria = reader("Correo").ToString()
+                    .Nombre = reader("Nombre").ToString(),
+                    .Precio = Convert.ToDouble(reader("Precio")),
+                    .Categoria = reader("Categoria").ToString()
                 }
                 productos.Add(producto)
             End While
@@ -99,6 +99,61 @@ Public Class BD
             connection.Close()
 
             Dim queryID As String = "SELECT MAX(ID) FROM Clientes"
+            Dim commandID As New SqlCommand(queryID, connection)
+
+            connection.Open()
+            Dim clienteID As Integer = Convert.ToInt32(commandID.ExecuteScalar())
+            connection.Close()
+
+            Return clienteID
+        End Using
+    End Function
+    Public Shared Function ActualizarProducto(producto As Producto) As Boolean
+
+        Using connection As New SqlConnection(connectionString)
+            Dim query As String = "UPDATE Productos SET Nombre = @Nombre, Precio = @Precio, Categoria = @Categoria WHERE ID = @ID"
+            Dim command As New SqlCommand(query, connection)
+
+            command.Parameters.AddWithValue("@Nombre", producto.Nombre)
+            command.Parameters.AddWithValue("@Precio", producto.Precio)
+            command.Parameters.AddWithValue("@Categoria", producto.Categoria)
+            command.Parameters.AddWithValue("@ID", producto.ID)
+
+            connection.Open()
+            Dim rowsAffected As Integer = command.ExecuteNonQuery()
+            connection.Close()
+            Return rowsAffected > 0
+        End Using
+    End Function
+    Public Shared Function EliminarProducto(productoID As Integer) As Boolean
+
+        Using connection As New SqlConnection(connectionString)
+            Dim query As String = "DELETE FROM Productos WHERE ID = @ID"
+            Dim command As New SqlCommand(query, connection)
+
+            command.Parameters.AddWithValue("@ID", productoID)
+
+            connection.Open()
+            Dim rowsAffected As Integer = command.ExecuteNonQuery()
+            connection.Close()
+            Return rowsAffected > 0
+        End Using
+    End Function
+    Public Shared Function AgregarNuevoProducto(producto As Producto) As Integer
+
+        Using connection As New SqlConnection(connectionString)
+            Dim query As String = "INSERT INTO Productos (Nombre, Precio, Categoria) VALUES (@Nombre, @Precio, @Categoria)"
+            Dim command As New SqlCommand(query, connection)
+
+            command.Parameters.AddWithValue("@Nombre", producto.Nombre)
+            command.Parameters.AddWithValue("@Precio", producto.Precio)
+            command.Parameters.AddWithValue("@Categoria", producto.Categoria)
+
+            connection.Open()
+            command.ExecuteNonQuery()
+            connection.Close()
+
+            Dim queryID As String = "SELECT MAX(ID) FROM Productos"
             Dim commandID As New SqlCommand(queryID, connection)
 
             connection.Open()
