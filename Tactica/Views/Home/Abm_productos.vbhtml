@@ -2,10 +2,34 @@
 
 @Code
     Dim productos = TryCast(ViewBag.Productos, List(Of Producto))
+    Dim categorias = TryCast(ViewBag.Categorias, List(Of String))
 End Code
 
 <h2>Lista de Productos</h2>
-<button class="btn btn-success mb-3" onclick="NuevoProducto()">Agregar Producto</button>
+
+<div class="mb-3">
+    <input type="text" id="buscar_producto" class="form-control" placeholder="Buscar por nombre" onkeyup="BuscarProductos()" />
+</div>
+
+<div class="mb-3">
+    <label for="categoria_filtro">Filtrar por categoría:</label>
+    <select id="categoria_filtro" class="form-control" onchange="FiltrarPorCategoria()">
+        <option value="">Seleccione una categoría</option>
+        @For Each categoria In categorias
+            @<option value = "@categoria" >@categoria</option>
+        Next
+    </select>
+</div>
+
+<div class="mb-3">
+    <label for="precio_desde">Filtrar por precio:</label>
+    <div class="d-flex">
+        <input type="number" id="precio_desde" class="form-control me-2" placeholder="Desde" />
+        <input type="number" id="precio_hasta" class="form-control me-2" placeholder="Hasta" />
+        <button class="btn btn-primary" onclick="FiltrarPorPrecio()">Buscar</button>
+    </div>
+</div>
+
 <Table Class="table table-bordered">
     <thead>
         <tr>
@@ -31,11 +55,12 @@ End Code
         Next
     </tbody>
 </Table>
+
 <script>
     function Editar(productoID) {
-        const nombreProducto = document.getElementById('nombre_'+productoID);
-        const precioProducto = document.getElementById('precio_'+productoID);
-        const categoriaProducto = document.getElementById('categoria_'+productoID);
+        const nombreProducto = document.getElementById('nombre_' + productoID);
+        const precioProducto = document.getElementById('precio_' + productoID);
+        const categoriaProducto = document.getElementById('categoria_' + productoID);
 
         nombreProducto.innerHTML = `<input type="text" value="${nombreProducto.textContent}" id="nombre_${productoID}" class="form-control">`;
         precioProducto.innerHTML = `<input type="text" value="${precioProducto.textContent}" id="precio_${productoID}" class="form-control">`;
@@ -44,7 +69,7 @@ End Code
         const editarBoton = document.querySelector(`button[onclick="Editar(${productoID})"]`);
         editarBoton.textContent = "Guardar";
         editarBoton.onclick = () => Guardar(productoID);
-}
+    }
 
     function Guardar(productoID) {
         const nombreProducto = document.getElementById('nombre_' + productoID);
@@ -155,7 +180,7 @@ End Code
                     <td id="precio_${productoID}">${nuevoProducto.precio}</td>
                     <td id="categoria_${productoID}">${nuevoProducto.categoria}</td>
                     <td>
-                        <button type="submit" class="btn btn-danger" onclick="Eliminar(${productoID})">?</button>
+                        <button type="submit" class="btn btn-danger" onclick="Eliminar(${productoID})">❌</button>
                         <button class="btn btn-primary" onclick="Editar(${productoID})">Editar</button>
                     </td>
                 </tr>
@@ -168,4 +193,122 @@ End Code
             }
         });
     }
+
+    function BuscarProductos() {
+        const busqueda = document.getElementById('buscar_producto').value.trim();
+
+        $.ajax({
+            type: 'POST',
+            url: '/Home/BuscarProductos',
+            dataType: 'JSON',
+            data: { busqueda: busqueda },
+            success: function (response) {
+                const tablaProductos = document.getElementById('tabla_productos');
+                tablaProductos.innerHTML = '';
+                console.log(response)
+
+                response.ID.forEach(function (producto) {
+                    const nuevaFila = `
+                <tr id="tr_${producto.ID}">
+                    <td id="${producto.ID}">${producto.ID}</td>
+                    <td id="nombre_${producto.ID}">${producto.Nombre}</td>
+                    <td id="precio_${producto.ID}">${producto.Precio}</td>
+                    <td id="categoria_${producto.ID}">${producto.Categoria}</td>
+                    <td>
+                        <button type="submit" class="btn btn-danger" onclick="Eliminar(${producto.ID})">❌</button>
+                        <button class="btn btn-primary" onclick="Editar(${producto.ID})">Editar</button>
+                    </td>
+                </tr>
+            `;
+                    tablaProductos.insertAdjacentHTML('beforeend', nuevaFila);
+                });
+            },
+            error: function (error) {
+                console.error('Error al buscar productos: ', error);
+            }
+        });
+    }
+
+    function FiltrarPorPrecio() {
+        const precioDesde = document.getElementById('precio_desde').value.trim();
+        const precioHasta = document.getElementById('precio_hasta').value.trim();
+        
+        if (precioDesde === '' && precioHasta === '') {
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/Home/FiltrarPorPrecio', 
+            dataType: 'JSON',
+            data: {
+                desde: precioDesde,
+                hasta: precioHasta
+            },
+            success: function (response) {
+                const tablaProductos = document.getElementById('tabla_productos');
+                tablaProductos.innerHTML = ''; 
+
+                response.ID.forEach(function (producto) {
+                    const nuevaFila = `
+                    <tr id="tr_${producto.ID}">
+                        <td id="${producto.ID}">${producto.ID}</td>
+                        <td id="nombre_${producto.ID}">${producto.Nombre}</td>
+                        <td id="precio_${producto.ID}">${producto.Precio}</td>
+                        <td id="categoria_${producto.ID}">${producto.Categoria}</td>
+                        <td>
+                            <button type="submit" class="btn btn-danger" onclick="Eliminar(${producto.ID})">❌</button>
+                            <button class="btn btn-primary" onclick="Editar(${producto.ID})">Editar</button>
+                        </td>
+                    </tr>
+                `;
+                    tablaProductos.insertAdjacentHTML('beforeend', nuevaFila);
+                });
+            },
+            error: function (error) {
+                console.error('Error al filtrar productos por precio: ', error);
+            }
+        });
+        document.getElementById('precio_desde').value = '';
+        document.getElementById('precio_hasta').value = '';
+    }
+
+    function FiltrarPorCategoria() {
+        const categoria = document.getElementById('categoria_filtro').value.trim();
+
+        if (categoria === '') {
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/Home/FiltrarPorCategoria', 
+            dataType: 'JSON',
+            data: { categoria: categoria },
+            success: function (response) {
+                const tablaProductos = document.getElementById('tabla_productos');
+                tablaProductos.innerHTML = ''; 
+
+                response.ID.forEach(function (producto) {
+                    const nuevaFila = `
+                    <tr id="tr_${producto.ID}">
+                        <td id="${producto.ID}">${producto.ID}</td>
+                        <td id="nombre_${producto.ID}">${producto.Nombre}</td>
+                        <td id="precio_${producto.ID}">${producto.Precio}</td>
+                        <td id="categoria_${producto.ID}">${producto.Categoria}</td>
+                        <td>
+                            <button type="submit" class="btn btn-danger" onclick="Eliminar(${producto.ID})">❌</button>
+                            <button class="btn btn-primary" onclick="Editar(${producto.ID})">Editar</button>
+                        </td>
+                    </tr>
+                `;
+                    tablaProductos.insertAdjacentHTML('beforeend', nuevaFila);
+                });
+            },
+            error: function (error) {
+                console.error('Error al filtrar productos por categoría: ', error);
+            }
+        });
+    }
+
 </script>

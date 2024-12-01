@@ -3,9 +3,10 @@
 @Code
     Dim clientes = TryCast(ViewBag.Clientes, List(Of Cliente))
 End Code
-<input type="text" id="buscar_cliente" class="form-control mb-3" placeholder="Buscar por nombre" onkeyup="BuscarClientes()" />
+
 
 <h2>Lista de Clientes</h2>
+<input type="text" id="buscar_cliente" class="form-control mb-3" placeholder="Buscar por nombre" onkeyup="BuscarClientes()" />
 <button class="btn btn-success mb-3" onclick="NuevoCliente()">Agregar Cliente</button>
 <Table Class="table table-bordered">
     <thead>
@@ -183,7 +184,7 @@ End Code
                 tablaClientes.innerHTML = '';
                 console.log(response)
 
-                response.forEach(function (cliente) {
+                response.ID.forEach(function (cliente) {
                     const nuevaFila = `
                     <tr id="tr_${cliente.ID}">
                         <td id="${cliente.ID}">${cliente.ID}</td>

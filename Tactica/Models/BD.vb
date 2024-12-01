@@ -190,4 +190,104 @@ Public Class BD
         End Using
         Return clientes
     End Function
+    Public Shared Function BuscarProductos(busqueda As String) As List(Of Producto)
+        Dim productos As New List(Of Producto)
+
+        Using connection As New SqlConnection(connectionString)
+            Dim query As String = "SELECT * FROM Productos where Nombre like @busqueda"
+            Dim command As New SqlCommand(query, connection)
+
+            Dim busquedaConPorcentaje As String = "%" & busqueda & "%"
+            command.Parameters.AddWithValue("@busqueda", busquedaConPorcentaje)
+
+            connection.Open()
+            Dim reader As SqlDataReader = command.ExecuteReader()
+
+            While reader.Read()
+                Dim producto As New Producto With {
+                    .ID = Convert.ToInt32(reader("ID")),
+                    .Nombre = reader("Nombre").ToString(),
+                    .Precio = Convert.ToDouble(reader("Precio")),
+                    .Categoria = reader("Categoria").ToString()
+                }
+                productos.Add(producto)
+            End While
+
+            reader.Close()
+        End Using
+        Return productos
+    End Function
+    Public Shared Function ObtenerCategorias() As List(Of String)
+        Dim categorias As New List(Of String)
+
+        Using connection As New SqlConnection(connectionString)
+            Dim query As String = "SELECT DISTINCT Categoria FROM Productos"
+            Dim command As New SqlCommand(query, connection)
+
+            connection.Open()
+            Dim reader As SqlDataReader = command.ExecuteReader()
+
+            While reader.Read()
+                categorias.Add(reader("Categoria").ToString())
+            End While
+            reader.Close()
+        End Using
+
+        Return categorias
+    End Function
+    Public Shared Function FiltrarPorCategoria(categoria As String) As List(Of Producto)
+        Dim productos As New List(Of Producto)
+
+        Using connection As New SqlConnection(connectionString)
+            Dim query As String = "SELECT * FROM productos WHERE Categoria = @categoria"
+            Dim command As New SqlCommand(query, connection)
+
+            command.Parameters.AddWithValue("@categoria", categoria)
+
+            connection.Open()
+            Dim reader As SqlDataReader = command.ExecuteReader()
+
+            While reader.Read()
+                Dim producto As New Producto With {
+                    .ID = Convert.ToInt32(reader("ID")),
+                    .Nombre = reader("Nombre").ToString(),
+                    .Precio = Convert.ToDouble(reader("Precio")),
+                    .Categoria = reader("Categoria").ToString()
+                }
+                productos.Add(producto)
+            End While
+
+            reader.Close()
+        End Using
+
+        Return productos
+    End Function
+    Public Shared Function FiltrarPorPrecio(desde As Integer, hasta As Integer) As List(Of Producto)
+        Dim productos As New List(Of Producto)
+
+        Using connection As New SqlConnection(connectionString)
+            Dim query As String = "SELECT * FROM productos WHERE Precio >= @desde AND Precio <= @hasta"
+            Dim command As New SqlCommand(query, connection)
+
+            command.Parameters.AddWithValue("@desde", desde)
+            command.Parameters.AddWithValue("@hasta", hasta)
+
+            connection.Open()
+            Dim reader As SqlDataReader = command.ExecuteReader()
+
+            While reader.Read()
+                Dim producto As New Producto With {
+                    .ID = Convert.ToInt32(reader("ID")),
+                    .Nombre = reader("Nombre").ToString(),
+                    .Precio = Convert.ToDouble(reader("Precio")),
+                    .Categoria = reader("Categoria").ToString()
+                }
+                productos.Add(producto)
+            End While
+
+            reader.Close()
+        End Using
+
+        Return productos
+    End Function
 End Class
