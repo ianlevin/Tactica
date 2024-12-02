@@ -217,9 +217,9 @@
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
-    <Content Include="Views\Home\Abm_clientes.vbhtml" />
-    <Content Include="Views\Home\Abm_productos.vbhtml" />
-    <Content Include="Views\Home\Abm_ventas.vbhtml" />
+    <Content Include="Views\Cliente\Abm_clientes.vbhtml" />
+    <Content Include="Views\Producto\Abm_productos.vbhtml" />
+    <Content Include="Views\Venta\Abm_ventas.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

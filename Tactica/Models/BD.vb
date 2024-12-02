@@ -265,8 +265,6 @@ Public Class BD
             End Using
         End Using
     End Function
-
-
     Public Shared Function EliminarCliente(clienteID As Integer) As Boolean
 
         Using connection As New SqlConnection(connectionString)
@@ -336,6 +334,35 @@ Public Class BD
             Return rowsAffected > 0
         End Using
     End Function
+    Public Shared Function EliminarVenta(ventaId As Integer) As Boolean
+
+        Using connection As New SqlConnection(connectionString)
+            Dim query As String = "DELETE FROM Ventas WHERE ID = @ventaid; DELETE FROM VentasItems WHERE IDVenta = @ventaid;"
+            Dim command As New SqlCommand(query, connection)
+
+            command.Parameters.AddWithValue("@ventaid", ventaId)
+
+            connection.Open()
+            Dim rowsAffected As Integer = command.ExecuteNonQuery()
+            connection.Close()
+            Return rowsAffected > 0
+        End Using
+    End Function
+    Public Shared Function EliminarProductoVenta(ventaId As Integer, productoId As Integer) As Boolean
+
+        Using connection As New SqlConnection(connectionString)
+            Dim query As String = "DELETE FROM VentasItems WHERE IDVenta = @ventaId AND IDProducto = @productoId"
+            Dim command As New SqlCommand(query, connection)
+
+            command.Parameters.AddWithValue("@ventaId", ventaId)
+            command.Parameters.AddWithValue("@productoId", productoId)
+
+            connection.Open()
+            Dim rowsAffected As Integer = command.ExecuteNonQuery()
+            connection.Close()
+            Return rowsAffected > 0
+        End Using
+    End Function
     Public Shared Function AgregarNuevoProducto(producto As Producto) As Integer
 
         Using connection As New SqlConnection(connectionString)
@@ -359,6 +386,38 @@ Public Class BD
 
             Return clienteID
         End Using
+    End Function
+    Public Shared Function AgregarNuevaVenta(nuevaVenta As Venta, ventaItems As List(Of VentaItems)) As Boolean
+        Using connection As New SqlConnection(connectionString)
+
+            Dim queryVenta As String = "INSERT INTO Ventas (IDCliente, Fecha, Total) VALUES (@idcliente, @fecha, @total); SELECT SCOPE_IDENTITY();"
+            Dim commandVenta As New SqlCommand(queryVenta, connection)
+
+            commandVenta.Parameters.AddWithValue("@idcliente", nuevaVenta.IDCliente)
+            commandVenta.Parameters.AddWithValue("@fecha", nuevaVenta.Fecha)
+            commandVenta.Parameters.AddWithValue("@total", nuevaVenta.Total)
+
+            connection.Open()
+            Dim idVenta As Integer = Convert.ToInt32(commandVenta.ExecuteScalar())
+
+            Dim queryVentaItems As String = "INSERT INTO VentasItems (IDVenta, IDProducto, PrecioUnitario, Cantidad, PrecioTotal) VALUES (@idventa, @idproducto, @preciounitario, @cantidad, @preciototal)"
+
+            For i As Integer = 1 To ventaItems.Count - 1
+                Dim item As VentaItems = ventaItems(i)
+                Dim commandVentaItem As New SqlCommand(queryVentaItems, connection)
+
+                commandVentaItem.Parameters.AddWithValue("@idventa", idVenta)
+                commandVentaItem.Parameters.AddWithValue("@idproducto", item.IDProducto)
+                commandVentaItem.Parameters.AddWithValue("@preciounitario", item.PrecioUnitario)
+                commandVentaItem.Parameters.AddWithValue("@cantidad", item.Cantidad)
+                commandVentaItem.Parameters.AddWithValue("@preciototal", item.PrecioTotal)
+
+                commandVentaItem.ExecuteNonQuery()
+            Next
+            connection.Close()
+        End Using
+
+        Return True
     End Function
     Public Shared Function BuscarClientes(busqueda As String) As List(Of Cliente)
         Dim clientes As New List(Of Cliente)
@@ -462,7 +521,6 @@ Public Class BD
         End Using
         Return ventaItems
     End Function
-
     Public Shared Function BuscarProductos(busqueda As String) As List(Of Producto)
         Dim productos As New List(Of Producto)
 

@@ -3,24 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{494A216E-0D1A-4979-B183-5679F810F2C5}|Tactica\\Tactica.vbproj|C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\tactica\\models\\bd.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
-      "RelativeMoniker": "D:0:0:{494A216E-0D1A-4979-B183-5679F810F2C5}|Tactica\\Tactica.vbproj|solutionrelative:tactica\\models\\bd.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{494A216E-0D1A-4979-B183-5679F810F2C5}|Tactica\\Tactica.vbproj|c:\\users\\juanr\\onedrive\\escritorio\\tactica\\tactica\\views\\home\\abm_ventas.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{494A216E-0D1A-4979-B183-5679F810F2C5}|Tactica\\Tactica.vbproj|solutionrelative:tactica\\views\\home\\abm_ventas.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{494A216E-0D1A-4979-B183-5679F810F2C5}|Tactica\\Tactica.vbproj|C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\tactica\\controllers\\homecontroller.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
-      "RelativeMoniker": "D:0:0:{494A216E-0D1A-4979-B183-5679F810F2C5}|Tactica\\Tactica.vbproj|solutionrelative:tactica\\controllers\\homecontroller.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{494A216E-0D1A-4979-B183-5679F810F2C5}|Tactica\\Tactica.vbproj|C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\tactica\\views\\home\\abm_clientes.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{494A216E-0D1A-4979-B183-5679F810F2C5}|Tactica\\Tactica.vbproj|solutionrelative:tactica\\views\\home\\abm_clientes.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{494A216E-0D1A-4979-B183-5679F810F2C5}|Tactica\\Tactica.vbproj|C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\tactica\\models\\ventaitems.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
-      "RelativeMoniker": "D:0:0:{494A216E-0D1A-4979-B183-5679F810F2C5}|Tactica\\Tactica.vbproj|solutionrelative:tactica\\models\\ventaitems.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+      "AbsoluteMoniker": "D:0:0:{494A216E-0D1A-4979-B183-5679F810F2C5}|Tactica\\Tactica.vbproj|c:\\users\\juanr\\onedrive\\escritorio\\tactica\\tactica\\views\\venta\\abm_ventas.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{494A216E-0D1A-4979-B183-5679F810F2C5}|Tactica\\Tactica.vbproj|solutionrelative:tactica\\views\\venta\\abm_ventas.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,71 +14,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "VentaItems.vb",
-              "DocumentMoniker": "C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\Tactica\\Models\\VentaItems.vb",
-              "RelativeDocumentMoniker": "Tactica\\Models\\VentaItems.vb",
-              "ToolTip": "C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\Tactica\\Models\\VentaItems.vb",
-              "RelativeToolTip": "Tactica\\Models\\VentaItems.vb",
-              "ViewState": "AgIAAAAAAAAAAAAAAAA+wAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-12-02T06:04:47.962Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Abm_clientes.vbhtml",
-              "DocumentMoniker": "C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\Tactica\\Views\\Home\\Abm_clientes.vbhtml",
-              "RelativeDocumentMoniker": "Tactica\\Views\\Home\\Abm_clientes.vbhtml",
-              "ToolTip": "C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\Tactica\\Views\\Home\\Abm_clientes.vbhtml",
-              "RelativeToolTip": "Tactica\\Views\\Home\\Abm_clientes.vbhtml",
-              "ViewState": "AgIAAK0AAAAAAAAAAAAYwM0AAAALAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003381|",
-              "WhenOpened": "2024-12-02T05:11:10.576Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "BD.vb",
-              "DocumentMoniker": "C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\Tactica\\Models\\BD.vb",
-              "RelativeDocumentMoniker": "Tactica\\Models\\BD.vb",
-              "ToolTip": "C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\Tactica\\Models\\BD.vb",
-              "RelativeToolTip": "Tactica\\Models\\BD.vb",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAIwP0AAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-12-02T05:12:37.716Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "HomeController.vb",
-              "DocumentMoniker": "C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\Tactica\\Controllers\\HomeController.vb",
-              "RelativeDocumentMoniker": "Tactica\\Controllers\\HomeController.vb",
-              "ToolTip": "C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\Tactica\\Controllers\\HomeController.vb",
-              "RelativeToolTip": "Tactica\\Controllers\\HomeController.vb",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-12-02T05:11:50.095Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "Abm_ventas.vbhtml",
-              "DocumentMoniker": "C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\Tactica\\Views\\Home\\Abm_ventas.vbhtml",
-              "RelativeDocumentMoniker": "Tactica\\Views\\Home\\Abm_ventas.vbhtml",
-              "ToolTip": "C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\Tactica\\Views\\Home\\Abm_ventas.vbhtml",
-              "RelativeToolTip": "Tactica\\Views\\Home\\Abm_ventas.vbhtml",
-              "ViewState": "AgIAALUAAAAAAAAAAAAswOgAAAAFAAAAAAAAAA==",
+              "DocumentMoniker": "C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\Tactica\\Views\\Venta\\Abm_ventas.vbhtml",
+              "RelativeDocumentMoniker": "Tactica\\Views\\Venta\\Abm_ventas.vbhtml",
+              "ToolTip": "C:\\Users\\juanr\\OneDrive\\Escritorio\\Tactica\\Tactica\\Views\\Venta\\Abm_ventas.vbhtml",
+              "RelativeToolTip": "Tactica\\Views\\Venta\\Abm_ventas.vbhtml",
+              "ViewState": "AgIAANUAAAAAAAAAAAAcwN0AAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003381|",
-              "WhenOpened": "2024-12-02T05:02:23.526Z",
+              "WhenOpened": "2024-12-02T18:32:29.34Z",
               "EditorCaption": ""
             }
           ]

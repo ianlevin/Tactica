@@ -11,14 +11,14 @@
 <body>
     <div class="navbar">
         <div class="navbar-logo">
-            <img src="/Content/logo.png" alt="Logo">
+            <img src="/Content/Captura.png" alt="Logo">
             <h1>Sistema de Gestión</h1>
         </div>
 
         <div class="navbar-menu">
-            <a href="@Url.Action("AbmClientes", "Home")" class="active">ABM Clientes</a>
-            <a href="@Url.Action("AbmProductos", "Home")">ABM Productos</a>
-            <a href="@Url.Action("AbmVentas", "Home")">ABM Ventas</a>
+            <a href="@Url.Action("AbmClientes", "Cliente")" class="active">ABM Clientes</a>
+            <a href="@Url.Action("AbmProductos", "Producto")">ABM Productos</a>
+            <a href="@Url.Action("AbmVentas", "Venta")">ABM Ventas</a>
         </div>
 
         <div class="navbar-toggle" onclick="toggleMenu()">
