@@ -47,7 +47,7 @@ End Code
                 <td id="productos_@venta.ID">
                     @For Each ventaItem As VentaItems In ventasItems.Where(Function(v) v.IDVenta = venta.ID)
                         Dim productoNombre = productos.FirstOrDefault(Function(p) p.ID = ventaItem.IDProducto)?.Nombre
-                        @<span id="producto_@ventaItem.IDProducto">@productoNombre</span>
+                        @<span id="producto_@ventaItem.IDProducto" data-id-venta-item="@ventaItem.ID">@productoNombre</span>
                         @<span id="cantidad_@ventaItem.IDProducto">x @ventaItem.Cantidad</span>@<br />
                                             Next
                 </td>
@@ -64,13 +64,13 @@ End Code
 
 <script>
     function Editar(ventaId) {
-    
     const fila = document.getElementById(`tr_${ventaId}`);
 
     const productosVenta = Array.from(fila.querySelectorAll(`#productos_${ventaId} span[id^='producto_']`)).map(el => ({
         id: el.id.split('_')[1],
         nombre: el.textContent.trim(),
-        cantidad: el.nextElementSibling.textContent.trim().replace('x ', '')
+        cantidad: el.nextElementSibling.textContent.trim().replace('x ', ''),
+        idVentaItem: el.dataset.idVentaItem || 0
     }));
 
     const productosDisponibles = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(productos));
@@ -78,7 +78,7 @@ End Code
     let productosHTML = "";
     productosVenta.forEach(producto => {
         productosHTML += `
-            <div id="producto_editar_${producto.id}" class="mb-2 d-flex align-items-center">
+            <div id="producto_editar_${producto.id}" class="mb-2 d-flex align-items-center" data-id-venta-item="${producto.idVentaItem}">
                 <input type="text" class="form-control me-2" id="cantidad_${producto.id}" value="${producto.cantidad}" style="width: 60px;" />
                 <span class="me-2">${producto.nombre}</span>
                 <button class="btn btn-danger btn-sm" onclick="EliminarProducto(${ventaId}, ${producto.id})">❌</button>
@@ -112,6 +112,7 @@ End Code
     `;
 }
 
+
     function AgregarProducto(ventaId) {
         const nuevoProductoId = document.getElementById(`nuevo_producto_${ventaId}`).value;
         const nuevoProductoNombre = document.getElementById(`nuevo_producto_${ventaId}`).selectedOptions[0].text;
@@ -136,67 +137,59 @@ End Code
     }
 
     function Guardar(ventaId) {
-    const fila = document.getElementById(`tr_${ventaId}`);
+        var productosDisponibles = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(productos));
+        const fila = document.getElementById(`tr_${ventaId}`);
 
-    // Obtener los productos editados
-    const productos = Array.from(fila.querySelectorAll(`#productos_${ventaId} div[id^='producto_editar_']`)).map(el => {
-        const idProducto = el.id.split('_')[2];
-        const cantidad = el.querySelector("input").value;
+        const productos = Array.from(fila.querySelectorAll(`#productos_${ventaId} div[id^='producto_editar_']`)).map(el => {
+            const idProducto = el.id.split('_')[2];  
+            const cantidad = el.querySelector("input").value;  
 
-        // Obtener el nombre del producto directamente del DOM
-        const nombreProducto = el.querySelector(".producto-nombre")?.textContent.trim();
+            const idVentaItem = el.dataset.idVentaItem || 0;
+            const nombreProducto = el.querySelector(".producto-nombre")?.textContent.trim();  
 
-        return {
-            IDVenta: ventaId,
-            IDProducto: idProducto,
-            Cantidad: cantidad,
-            Nombre: nombreProducto,
-            PrecioUnitario: 0,
-            PrecioTotal: 0
-        };
-    });
+            const producto = productosDisponibles.find(p => p.ID == idProducto);
+            const precioUnitario = producto ? producto.Precio : 0;  
 
-    const total = parseFloat(document.getElementById(`total_editar_${ventaId}`).value);
+            return {
+                IDVenta: ventaId,
+                IDProducto: idProducto,
+                ID: parseInt(idVentaItem, 10),
+                Cantidad: cantidad,
+                Nombre: nombreProducto,
+                PrecioUnitario: precioUnitario,  
+                PrecioTotal: precioUnitario * cantidad  
+            };
+        });
 
-    // Crear la lista de VentaItems
-    const ventaItems = productos.map(p => ({
-        IDVenta: p.IDVenta,
-        IDProducto: p.IDProducto,
-        Cantidad: parseInt(p.Cantidad, 10),
-        PrecioUnitario: p.PrecioUnitario,
-        PrecioTotal: p.Cantidad * p.PrecioUnitario
-    }));
 
-    console.log(ventaItems); // Verificar qué se está enviando
+        const total = parseFloat(document.getElementById(`total_editar_${ventaId}`).value);
 
-    // Enviar los datos al controlador mediante AJAX
-    $.ajax({
-        type: 'POST',
-        url: '/Home/ActualizarVentaItems', // Asegúrate de que esta ruta sea correcta
-        contentType: 'application/json', // Importante: especifica el tipo de contenido como JSON
-        data: JSON.stringify({ ventaItems: ventaItems }), // Serializa los datos como JSON
-        success: function (response) {
-            // Actualizar el DOM con los datos guardados
-            let productosHTML = productos.map(p => `
-                <span id="producto_${p.IDProducto}">${p.Nombre}</span>
-                <span id="cantidad_${p.IDProducto}">x ${p.Cantidad}</span><br>
-            `).join('');
 
-            fila.querySelector(`#productos_${ventaId}`).innerHTML = productosHTML;
-            fila.querySelector(`#total_${ventaId}`).textContent = total.toFixed(2);
+        const ventaItems = productos.map(p => ({
+            IDVenta: p.IDVenta,
+            IDProducto: p.IDProducto,
+            ID: p.ID,
+            Cantidad: parseInt(p.Cantidad, 10),
+            PrecioUnitario: p.PrecioUnitario,
+            PrecioTotal: p.Cantidad * p.PrecioUnitario
+        }));
 
-            // Restaurar los botones de acciones
-            const acciones = fila.querySelector(`td:last-child`);
-            acciones.innerHTML = `
-                <button class="btn btn-primary btn-sm" onclick="Editar(${ventaId})">Editar</button>
-                <button class="btn btn-danger btn-sm" onclick="Eliminar(${ventaId})">❌</button>
-            `;
-        },
-        error: function () {
-            alert("Ocurrió un error al guardar los cambios.");
-        }
-    });
-}
+        console.log(ventaItems);
+        $.ajax({
+            type: 'POST',
+            url: '/Home/ActualizarVentaItems',
+            contentType: 'application/json',
+            data: JSON.stringify({ ventaItems: ventaItems }),
+            success: function (response) {
+                window.location.href = '/Home/AbmVentas';
+            },
+            error: function () {
+                alert("Ocurrió un error al guardar los cambios.");
+            }
+        });
+    }
+
+
 
     function FiltrarPorFecha() {
         const fecha = document.getElementById("filtro_fecha").value;
@@ -238,6 +231,7 @@ End Code
             }
         });
     }
+
     function BuscarPorNombre() {
         const busqueda = document.getElementById('buscar_venta').value.trim();
 
@@ -252,7 +246,7 @@ End Code
                     const arrayVentaItems = response.ventaItems;
                     const arrayProductos = response.productos;
                     const tablaVentas = document.getElementById('tabla_ventas');
-                    tablaVentas.innerHTML = ''; 
+                    tablaVentas.innerHTML = '';
 
                     arrayVentas.forEach(function (venta) {
                         const ventaItemsDeEstaVenta = arrayVentaItems.filter(item => item.IDVenta === venta.ID);
@@ -265,7 +259,7 @@ End Code
 
                         ventaItemsDeEstaVenta.forEach(function (ventaItem) {
                             const producto = arrayProductos.find(p => p.ID === ventaItem.IDProducto);
-                            const productoNombre = producto ? producto.Nombre : "Producto desconocido"; 
+                            const productoNombre = producto ? producto.Nombre : "Producto desconocido";
 
                             fila += `<span id="producto_${ventaItem.IDProducto}">${productoNombre}</span>
                         <span id="cantidad_${ventaItem.IDProducto}">x ${ventaItem.Cantidad}</span><br />`;
@@ -295,15 +289,15 @@ End Code
         let date;
 
         if (dateString && dateString.startsWith("/Date(") && dateString.endsWith(")/")) {
-            const timestamp = dateString.slice(6, -2); 
-            date = new Date(parseInt(timestamp)); 
+            const timestamp = dateString.slice(6, -2);
+            date = new Date(parseInt(timestamp));
         } else {
             date = new Date(dateString);
         }
 
 
         if (isNaN(date)) {
-            return "Fecha inválida"; 
+            return "Fecha inválida";
         }
 
         const day = String(date.getDate()).padStart(2, '0');

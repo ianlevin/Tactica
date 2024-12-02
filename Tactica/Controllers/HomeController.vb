@@ -7,8 +7,9 @@
     Function ActualizarCliente(cliente As Cliente) As Boolean
         Return BD.ActualizarCliente(cliente)
     End Function
-    Function ActualizarVentaItems(ventaItems As VentaItems) As Boolean
-        Return BD.ActualizarVentaItems(ventaItems)
+    Function ActualizarVentaItems(ventaItems As List(Of VentaItems)) As ActionResult
+        BD.ActualizarVentaItems(ventaItems)
+        Return RedirectToAction("AbmVentas")
     End Function
     Function EliminarCliente(clienteID As Integer) As Boolean
         Return BD.EliminarCliente(clienteID)

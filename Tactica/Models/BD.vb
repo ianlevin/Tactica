@@ -208,10 +208,65 @@ Public Class BD
             Return rowsAffected > 0
         End Using
     End Function
-    Public Shared Function ActualizarVentaItems(ventasItems As VentaItems) As Boolean
+    Public Shared Function ActualizarVentaItems(ventasItems As List(Of VentaItems))
+        Using connection As New SqlConnection(connectionString)
+            connection.Open()
 
-        Return True
+            Using transaction As SqlTransaction = connection.BeginTransaction()
+
+                For Each ventaItem In ventasItems
+                    Dim query As String
+
+                    If ventaItem.ID = 0 Then
+                        query = "INSERT INTO VentasItems (IDVenta, IDProducto, Cantidad, PrecioUnitario, PrecioTotal) 
+                             VALUES (@IDVenta, @IDProducto, @Cantidad, @PrecioUnitario, @PrecioTotal)"
+                    Else
+                        query = "UPDATE VentasItems 
+                             SET IDVenta = @IDVenta, 
+                                 IDProducto = @IDProducto, 
+                                 Cantidad = @Cantidad, 
+                                 PrecioUnitario = @PrecioUnitario, 
+                                 PrecioTotal = @PrecioTotal 
+                             WHERE ID = @ID"
+                    End If
+
+                    Using command As New SqlCommand(query, connection, transaction)
+                        command.Parameters.AddWithValue("@IDVenta", ventaItem.IDVenta)
+                        command.Parameters.AddWithValue("@IDProducto", ventaItem.IDProducto)
+                        command.Parameters.AddWithValue("@Cantidad", ventaItem.Cantidad)
+                        command.Parameters.AddWithValue("@PrecioUnitario", ventaItem.PrecioUnitario)
+                        command.Parameters.AddWithValue("@PrecioTotal", ventaItem.PrecioTotal)
+
+                        If ventaItem.ID <> 0 Then
+                            command.Parameters.AddWithValue("@ID", ventaItem.ID)
+                        End If
+
+                        command.ExecuteNonQuery()
+                    End Using
+                Next
+
+                Dim idVenta As Integer = ventasItems.FirstOrDefault()?.IDVenta
+
+                Dim totalQuery As String = "
+                    UPDATE Ventas
+                    SET Total = (
+                        SELECT SUM(PrecioTotal) 
+                        FROM VentasItems 
+                        WHERE IDVenta = @IDVenta
+                    )
+                    WHERE ID = @IDVenta"
+
+                Using command As New SqlCommand(totalQuery, connection, transaction)
+                    command.Parameters.AddWithValue("@IDVenta", idVenta)
+                    command.ExecuteNonQuery()
+                End Using
+
+                transaction.Commit()
+            End Using
+        End Using
     End Function
+
+
     Public Shared Function EliminarCliente(clienteID As Integer) As Boolean
 
         Using connection As New SqlConnection(connectionString)
