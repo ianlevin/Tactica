@@ -7,6 +7,9 @@
     Function ActualizarCliente(cliente As Cliente) As Boolean
         Return BD.ActualizarCliente(cliente)
     End Function
+    Function ActualizarVentaItems(ventaItems As VentaItems) As Boolean
+        Return BD.ActualizarVentaItems(ventaItems)
+    End Function
     Function EliminarCliente(clienteID As Integer) As Boolean
         Return BD.EliminarCliente(clienteID)
     End Function
@@ -15,6 +18,16 @@
     End Function
     Function BuscarClientes(busqueda As String) As JsonResult
         Return Json(New With {.ID = BD.BuscarClientes(busqueda)})
+    End Function
+    Function BuscarPorCliente(busqueda As String) As JsonResult
+        Dim ventas = BD.BuscarPorCliente(busqueda)
+        Dim ventasItems = BD.BuscarItemsPorCliente(busqueda)
+        Dim productos = BD.ObtenerProductos()
+        Return Json(New With {
+        .ventas = ventas,
+        .ventaItems = ventasItems,
+        .productos = productos
+    }, JsonRequestBehavior.AllowGet)
     End Function
     Function BuscarProductos(busqueda As String) As JsonResult
         Return Json(New With {.ID = BD.BuscarProductos(busqueda)})
@@ -27,6 +40,12 @@
         ViewBag.Productos = BD.ObtenerProductos()
         ViewBag.Categorias = BD.ObtenerCategorias()
         Return View("Abm_productos")
+    End Function
+    Function AbmVentas() As ActionResult
+        ViewBag.Ventas = BD.ObtenerVentas()
+        ViewBag.Productos = BD.ObtenerProductos()
+        ViewBag.VentasItems = BD.ObtenerVentasItems()
+        Return View("Abm_ventas")
     End Function
     Function ActualizarProducto(producto As Producto) As Boolean
         Return BD.ActualizarProducto(producto)

@@ -9,7 +9,26 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-        @RenderBody()
+    <div class="navbar">
+        <div class="navbar-logo">
+            <img src="/Content/logo.png" alt="Logo">
+            <h1>Sistema de Gestión</h1>
+        </div>
+
+        <div class="navbar-menu">
+            <a href="@Url.Action("AbmClientes", "Home")" class="active">ABM Clientes</a>
+            <a href="@Url.Action("AbmProductos", "Home")">ABM Productos</a>
+            <a href="@Url.Action("AbmVentas", "Home")">ABM Ventas</a>
+        </div>
+
+        <div class="navbar-toggle" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    @RenderBody()
 
 
     @Scripts.Render("~/bundles/jquery")
@@ -17,3 +36,7 @@
     @RenderSection("scripts", required:=False)
 </body>
 </html>
+<script>function toggleMenu() {
+        const menu = document.querySelector('.navbar-menu');
+        menu.classList.toggle('show');
+    }</script>

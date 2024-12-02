@@ -29,7 +29,7 @@ End Code
         <button class="btn btn-primary" onclick="FiltrarPorPrecio()">Buscar</button>
     </div>
 </div>
-
+<button class="btn btn-success mb-3" onclick="NuevoProducto()">Agregar Producto</button>
 <Table Class="table table-bordered">
     <thead>
         <tr>
@@ -88,21 +88,19 @@ End Code
             url: '/Home/ActualizarProducto',
             data: { producto: nuevoProducto },
             success: function (response) {
-                console.log("hola")
-                resolve(response);
+                nombreProducto.innerHTML = `${nuevoProducto.nombre}`;
+                precioProducto.innerHTML = `${nuevoProducto.precio}`;
+                categoriaProducto.innerHTML = `${nuevoProducto.categoria}`;
+
+                const editarBoton = document.querySelector(`button[onclick="Editar(${productoID})"]`);
+                editarBoton.textContent = "Editar";
+                editarBoton.onclick = () => Editar(productoID);
             },
             error: function (error) {
-                console.log("hoala")
+                console.log("error")
             }
         });
 
-        nombreProducto.innerHTML = `${nuevoProducto.nombre}`;
-        precioProducto.innerHTML = `${nuevoProducto.precio}`;
-        categoriaProducto.innerHTML = `${nuevoProducto.categoria}`;
-
-        const editarBoton = document.querySelector(`button[onclick="Editar(${productoID})"]`);
-        editarBoton.textContent = "Editar";
-        editarBoton.onclick = () => Editar(productoID);
 
     }
 

@@ -150,12 +150,17 @@
     <Compile Include="App_Start\BundleConfig.vb" />
     <Compile Include="App_Start\FilterConfig.vb" />
     <Compile Include="App_Start\RouteConfig.vb" />
+    <Compile Include="Controllers\ClienteController.vb" />
+    <Compile Include="Controllers\ProductoController.vb" />
+    <Compile Include="Controllers\VentaController.vb" />
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BD.vb" />
     <Compile Include="Models\Cliente.vb" />
     <Compile Include="Models\Producto.vb" />
+    <Compile Include="Models\Venta.vb" />
+    <Compile Include="Models\VentaItems.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -214,6 +219,7 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
     <Content Include="Views\Home\Abm_clientes.vbhtml" />
     <Content Include="Views\Home\Abm_productos.vbhtml" />
+    <Content Include="Views\Home\Abm_ventas.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
