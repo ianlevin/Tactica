@@ -1,5 +1,4 @@
-﻿@ModelType List(Of Venta)
-
+﻿
 @Code
     Dim ventas = TryCast(ViewBag.Ventas, List(Of Venta))
     Dim productos = TryCast(ViewBag.Productos, List(Of Producto))
@@ -238,8 +237,6 @@ End Code
         });
     }
 
-
-
     function FiltrarPorPrecio() {
         const precioDesde = parseFloat(document.getElementById("filtro_precio_desde").value || 0);
         const precioHasta = parseFloat(document.getElementById("filtro_precio_hasta").value || Infinity);
@@ -385,35 +382,6 @@ End Code
     });
 }
 
-    function AgregarProducto(filaId) {
-        const productoId = document.getElementById(`nuevo_producto_${filaId}`).value;
-        const cantidad = parseInt(document.getElementById(`cantidad_${filaId}`).value, 10);
-        const productoNombre = document.getElementById(`nuevo_producto_${filaId}`).selectedOptions[0].text;
-
-        if (!productoId || isNaN(cantidad) || cantidad <= 0) {
-            alert("Seleccione un producto y una cantidad válida.");
-            return;
-        }
-
-        const productosDisponibles = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(productos));
-        const producto = productosDisponibles.find(prod => prod.ID == productoId);
-
-        const productosContainer = document.getElementById(`productos_${filaId}`);
-        const totalField = document.getElementById(`total_${filaId}`);
-        const totalActual = parseFloat(totalField.textContent) || 0;
-
-        const subtotal = producto.Precio * cantidad;
-        totalField.textContent = (totalActual + subtotal).toFixed(2);
-
-        productosContainer.innerHTML += `
-            <div id="producto_editar_${productoId}_${filaId}">
-                <span>${productoNombre}</span>
-                <input type="number" class="form-control me-2" value="${cantidad}" style="width: 80px;" disabled />
-                <button class="btn btn-danger btn-sm" onclick="EliminarProducto('${filaId}', ${productoId}, ${subtotal})">❌</button>
-            </div>
-        `;
-    }
-
     function EliminarProducto(filaId, productoId, subtotal) {
         const productoDiv = document.getElementById(`producto_editar_${productoId}_${filaId}`);
         productoDiv.remove();
@@ -480,13 +448,10 @@ End Code
     });
 }
 
-
     function CancelarNuevaVenta(filaId) {
         const fila = document.getElementById(filaId);
         fila.remove();
     }
-
-
 
 
 

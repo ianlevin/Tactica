@@ -84,7 +84,6 @@ C:\Users\juanr\Downloads\Tactica\Tactica\obj\Debug\Tactica.vbproj.AssemblyRefere
 C:\Users\juanr\Downloads\Tactica\Tactica\obj\Debug\Tactica.Resources.resources
 C:\Users\juanr\Downloads\Tactica\Tactica\obj\Debug\Tactica.vbproj.GenerateResource.cache
 C:\Users\juanr\Downloads\Tactica\Tactica\obj\Debug\Tactica.vbproj.CoreCompileInputs.cache
-C:\Users\juanr\Downloads\Tactica\Tactica\obj\Debug\Tactica.vbproj.CopyComplete
 C:\Users\juanr\Downloads\Tactica\Tactica\obj\Debug\Tactica.dll
 C:\Users\juanr\Downloads\Tactica\Tactica\obj\Debug\Tactica.xml
 C:\Users\juanr\Downloads\Tactica\Tactica\obj\Debug\Tactica.pdb
@@ -178,3 +177,4 @@ C:\Users\juanr\OneDrive\Escritorio\Tactica\Tactica\obj\Debug\Tactica.vbproj.Up2D
 C:\Users\juanr\OneDrive\Escritorio\Tactica\Tactica\obj\Debug\Tactica.dll
 C:\Users\juanr\OneDrive\Escritorio\Tactica\Tactica\obj\Debug\Tactica.xml
 C:\Users\juanr\OneDrive\Escritorio\Tactica\Tactica\obj\Debug\Tactica.pdb
+C:\Users\juanr\Downloads\Tactica\Tactica\obj\Debug\Tactica.vbproj.Up2Date
